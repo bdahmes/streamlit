@@ -369,7 +369,7 @@ with st.form(key='my_form'):
                 # st.write('Extracting Scorecards...this will take a few seconds')
                 gh_scorecards = get_list(endpoint=scorecard_endpoint,headers=headers)
                 df_scorecards = get_scorecards_dataframe(gh_scorecards)
-                progress_bar.progress(100,text='Done!')
+                progress_bar.progress(98,text='Data Extracted!')
 
                 # Assemble constituents
                 df = pd.merge(df_applications,df_candidates,
@@ -388,7 +388,9 @@ with st.form(key='my_form'):
                 df_test['updated_cand'] = df_test['updated_cand'].dt.tz_localize(None)
                 df_test['created'] = df_test['created'].dt.tz_localize(None)
 
+                progress_bar.progress(99,text='Dataframe prepared')
                 df_xlsx = to_excel(df_test)
+                progress_bar.progress(100,text='Excel file generated')
             except:
                 st.write('Error extracting data. Try re-entering your Harvest API Key')
 
