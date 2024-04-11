@@ -388,13 +388,19 @@ with st.form(key='my_form'):
                 df_test['updated_cand'] = df_test['updated_cand'].dt.tz_localize(None)
                 df_test['created'] = df_test['created'].dt.tz_localize(None)
 
-                progress_bar.progress(99,text='Dataframe prepared')
-                df_xlsx = to_excel(df_test)
-                progress_bar.progress(100,text='Excel file generated')
+                progress_bar.progress(100,text='Dataframe prepared. Ready to download')
+                # df_xlsx = to_excel(df_test)
+                # progress_bar.progress(100,text='Excel file generated')
             except:
                 st.write('Error extracting data. Try re-entering your Harvest API Key')
 
 try:
-    st.download_button(label='Download Result',data=df_xlsx,file_name='df_test.xlsx')
+    csv_output = df_test.to_csv(index=False).encode('utf-8')
+    dl_button = st.download_button(label='Download Result as CSV',data=csv_output,file_name='Results.csv',mime='text/csv')
+    # buffer = BytesIO()
+    # with pd.ExcelWriter(buffer,engine='xlsxwriter') as writer:
+    #     df_test.to_excel(writer,index=False,sheet_name='Results')
+    #     dl_button = st.download_button(label='Download Result',data=buffer,file_name='df_test.xlsx')#,mime='application/vnd.ms-excel')
+    # # st.download_button(label='Download Result',data=df_xlsx,file_name='df_test.xlsx')
 except:
     pass
