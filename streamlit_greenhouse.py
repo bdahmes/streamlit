@@ -110,7 +110,8 @@ def get_jobs_dataframe(g_jobs):
         # 'recruiter_name':[],
         # 'coordinator_id':[],
         # 'coordinator_name':[],
-        'office':[]
+        'office':[],
+        'department':[]
     }   
     for j in g_jobs:
         # Job status options: closed, draft, open. Take 'open' only
@@ -118,6 +119,7 @@ def get_jobs_dataframe(g_jobs):
             job_list['job_id'].append(j['id'])
             job_list['job_name'].append(j['name'])
             job_list['office'].append(j['offices'][0]['name'])
+            job_list['department'].append(j['departments'][0]['name'])
             # recruiter_id = None
             # recruiter_name = None
             # for r in j['hiring_team']['recruiters']:
