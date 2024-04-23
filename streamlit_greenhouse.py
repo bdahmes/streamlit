@@ -106,10 +106,10 @@ def get_jobs_dataframe(g_jobs):
     job_list = {
         'job_id':[],
         'job_name':[],
-        'recruiter_id':[],
-        'recruiter_name':[],
-        'coordinator_id':[],
-        'coordinator_name':[],
+        # 'recruiter_id':[],
+        # 'recruiter_name':[],
+        # 'coordinator_id':[],
+        # 'coordinator_name':[],
         'office':[]
     }   
     for j in g_jobs:
@@ -118,24 +118,24 @@ def get_jobs_dataframe(g_jobs):
             job_list['job_id'].append(j['id'])
             job_list['job_name'].append(j['name'])
             job_list['office'].append(j['offices'][0]['name'])
-            recruiter_id = None
-            recruiter_name = None
-            for r in j['hiring_team']['recruiters']:
-                if r['responsible']:
-                    recruiter_id = r['id']
-                    recruiter_name = r['name']
-                    break
-            job_list['recruiter_id'].append(recruiter_id)
-            job_list['recruiter_name'].append(recruiter_name)
-            coordinator_id = None
-            coordinator_name = None
-            for coord in j['hiring_team']['coordinators']:
-                if coord['responsible']:
-                    coordinator_id = coord['id']
-                    coordinator_name = coord['name']
-                    break
-            job_list['coordinator_id'].append(coordinator_id)
-            job_list['coordinator_name'].append(coordinator_name)
+            # recruiter_id = None
+            # recruiter_name = None
+            # for r in j['hiring_team']['recruiters']:
+            #     if r['responsible']:
+            #         recruiter_id = r['id']
+            #         recruiter_name = r['name']
+            #         break
+            # job_list['recruiter_id'].append(recruiter_id)
+            # job_list['recruiter_name'].append(recruiter_name)
+            # coordinator_id = None
+            # coordinator_name = None
+            # for coord in j['hiring_team']['coordinators']:
+            #     if coord['responsible']:
+            #         coordinator_id = coord['id']
+            #         coordinator_name = coord['name']
+            #         break
+            # job_list['coordinator_id'].append(coordinator_id)
+            # job_list['coordinator_name'].append(coordinator_name)
             
     df_jobs = pd.DataFrame().from_dict(job_list).dropna().reset_index(drop=True)
     df_jobs['location'] = df_jobs['office'].apply(office_location)
@@ -168,6 +168,8 @@ def get_candidates_dataframe(g_candidates,valid_apps):
         'candidate_name':[],
         'created':[],
         'updated':[],
+        'recruiter_name':[],
+        'coordinator_name':[],
         'current_company':[],
         'application_id':[],
         'org_level':[]
@@ -183,6 +185,14 @@ def get_candidates_dataframe(g_candidates,valid_apps):
                     candidate_list['updated'].append(parser.isoparse(cand['last_activity']).astimezone(ZoneInfo('America/Chicago'))) 
                     candidate_list['current_company'].append(cand['company'])
                     candidate_list['application_id'].append(app['id'])
+                    if cand['recruiter'] is not None:
+                        candidate_list['recruiter_name'].append(cand['recruiter']['name'])
+                    else:
+                        candidate_list['recruiter_name'].append(None)
+                    if cand['coordinator'] is not None:
+                        candidate_list['coordinator_name'].append(cand['coordinator']['name'])
+                    else:
+                        candidate_list['coordinator_name'].append(None)
                     
                     org_level = 'Unknown'
                     if 'organizational_level' in cand['custom_fields'].keys():
@@ -202,6 +212,7 @@ def get_applications_dataframe(g_applications):
                 'job_id':[],
                 'job_name':[],
                 'status':[],
+                'source':[],
                 'stage':[]}
     for app in g_applications:
         skip = False
@@ -234,6 +245,11 @@ def get_applications_dataframe(g_applications):
                     app_list['job_name'].append(job_names[0])
                     app_list['status'].append(app['status'])
                     app_list['stage'].append(app['current_stage']['name'])
+
+                    if app['source'] is not None:
+                        app_list['source'].append(app['source']['public_name'])
+                    else:
+                        app_list['source'].append(None)
 
     df_app = pd.DataFrame().from_dict(app_list)
     df_app['location'] = df_app['job_name'].apply(job_location)
