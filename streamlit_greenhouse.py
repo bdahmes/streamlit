@@ -410,7 +410,7 @@ with st.form(key='my_form'):
                 # df_xlsx = to_excel(df_test)
                 # progress_bar.progress(100,text='Excel file generated')
             except:
-                st.write('Error extracting data. Try re-entering your Harvest API Key')
+                st.write('Error extracting data. Try rerunning (re-enter your Harvest API Key if necessary)')
 
 try:
     csv_output = df_test.to_csv(index=False).encode('utf-8')
